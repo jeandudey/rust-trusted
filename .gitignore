@@ -1,1 +1,4 @@
 target/
+.fstar-cache/
+**/*/.depend
+**/*/hax.fst.config.json
