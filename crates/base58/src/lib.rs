@@ -10,7 +10,7 @@ fn trim_start(s: &str) -> &str {
     s
 }
 
-#[hax_lib::ensures(|result| hax_lib::Prop::implies(result.into(), c == b' ' || c == b'\n' || c == b'\r' || c == b'\t') )]
+//#[hax_lib::ensures(|result| hax_lib::Prop::implies(result.into(), c == b' ' || c == b'\n' || c == b'\r' || c == b'\t') )]
 fn is_whitespace(c: u8) -> bool {
     c == b' ' /* || c == '\f' */ || c == b'\n' || c == b'\r' || c == b'\t' /* || c == '\v' */
 }

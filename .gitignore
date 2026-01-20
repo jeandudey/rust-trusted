@@ -1,4 +1,6 @@
 target/
+charon/
 .fstar-cache/
 **/*/.depend
 **/*/hax.fst.config.json
+*.llbc
