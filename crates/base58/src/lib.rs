@@ -1,16 +1,34 @@
 pub fn decode(s: &str) {
-    let _ = trim_start(s);
+    let s = eat_whitespace(s);
+    let (s, zeros) = eat_leading_ones(s);
 }
 
-fn trim_start(s: &str) -> &str {
+fn eat_leading_ones(s: &str) -> (&str, usize) {
+    let bytes = s.as_bytes();
     let mut i = 0;
-    while i < s.len() {
-        i += 1;
+    while i < bytes.len() {
+        if bytes[i] == b'1' {
+            i += 1;
+        } else {
+            break;
+        }
     }
-    s
+    (&s[i..], i)
 }
 
-//#[hax_lib::ensures(|result| hax_lib::Prop::implies(result.into(), c == b' ' || c == b'\n' || c == b'\r' || c == b'\t') )]
+fn eat_whitespace(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if is_whitespace(bytes[i]) {
+            i += 1;
+        } else {
+            break;
+        }
+    }
+    &s[i..]
+}
+
 fn is_whitespace(c: u8) -> bool {
-    c == b' ' /* || c == '\f' */ || c == b'\n' || c == b'\r' || c == b'\t' /* || c == '\v' */
+    c == b' ' || c == b'\x0C' || c == b'\n' || c == b'\r' || c == b'\t' || c == b'\x0B'
 }
