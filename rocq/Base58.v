@@ -1,0 +1,2 @@
+
+Definition encode (x : Z) := ().

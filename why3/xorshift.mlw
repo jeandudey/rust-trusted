@@ -1,0 +1,22 @@
+module C
+
+  use int.Int
+  use mach.c.C
+  use mach.int.UInt64GMP
+  use mach.bv.BVCheck64 as BV64
+
+  type xoshiro256ss_state = {
+    s0 : uint64;
+    s1 : uint64;
+    s2 : uint64;
+    s3 : uint64;
+  }
+
+  let xoshiro256ss_rol64 (x k: BV64.t) : BV64.t = BV64.of_int 0
+
+(*
+  let xoshiro256ss (state: ptr xoshiro256ss_state) : uint64
+  =
+    0
+    *)
+end

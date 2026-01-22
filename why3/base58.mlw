@@ -1,0 +1,107 @@
+(** {1 Theory of Base-58 }
+ 
+This file provides a theory over Base-58 encoding and decoding.
+*)
+
+module Base58
+
+  use mach.int.Int
+  use mach.int.Int63
+  use string.String
+  use string.Char
+
+  (** The Base-58 alphabet *)
+  constant alphabet : string = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+  
+  lemma alphabet_length: length alphabet = 58
+
+  function int2b58 (i: int) : char =
+    if 0 <= i <= 8   then chr (i + 49)       else
+    if 9 <= i <= 16  then chr (i - 9 + 65)   else
+    if 17 <= i <= 21 then chr (i - 17 + 74)  else
+    if 22 <= i <= 32 then chr (i - 22 + 80)  else
+    if 33 <= i <= 43 then chr (i - 33 + 97)  else
+    if 44 <= i <= 57 then chr (i - 44 + 109) else
+    chr 0
+
+  lemma int2b58_range_0_8:    forall i. 0  <= i <= 8  -> 49  <= code (int2b58 i) <= 57
+  lemma int2b58_range_9_16:   forall i. 9  <= i <= 16 -> 65  <= code (int2b58 i) <= 72
+  lemma int2b58_range_17_21:  forall i. 17 <= i <= 21 -> 74  <= code (int2b58 i) <= 78
+  lemma int2b58_range_22_32:  forall i. 22 <= i <= 32 -> 80  <= code (int2b58 i) <= 90
+  lemma int2b58_range_33_43:  forall i. 33 <= i <= 43 -> 97  <= code (int2b58 i) <= 107
+  lemma int2b58_range_44_57:  forall i. 44 <= i <= 57 -> 109 <= code (int2b58 i) <= 122
+  lemma int2b58_out_of_range: forall i. i < 0 || 58 <= i -> code (int2b58 i) = 0
+
+  predicate valid_b58_char (c: char) =
+    49 <= code c <= 57 || 65 <= code c <= 72 || 74 <= code c <= 78 ||
+    80 <= code c <= 90 || 97 <= code c <= 107 || 109 <= code c <= 122
+
+  lemma int2b58_valid_b58_char: forall i. 0 <= i < 58 -> valid_b58_char (int2b58 i)
+
+  function b582int (c: char) : int =
+    if 49 <= code c <= 57 then code c - 49 else
+    if 65 <= code c <= 72 then code c + 9 - 65 else
+    if 74 <= code c <= 78 then code c + 17 - 74 else
+    if 80 <= code c <= 90 then code c + 22 - 80 else
+    if 97 <= code c <= 107 then code c + 33 - 97 else
+    if 109 <= code c <= 122 then code c + 44 - 109 else
+    58
+
+  lemma b582int_not_valid_b58_char: forall c. not valid_b58_char c -> b582int c = 58 
+
+  lemma b582int_int2b58: forall i. 0 <= i < 58 -> b582int (int2b58 i) = i
+
+  lemma int2b58_b582int: forall c. valid_b58_char c -> int2b58 (b582int c) = c
+end
+
+module C
+  use int.Int
+  use mach.array.Array32
+  use mach.c.C
+  use mach.c.String
+  use mach.int.Byte
+  use mach.int.Int32
+  use mach.int.UInt32
+  use string.Char
+  use Base58
+
+  let base58_char2index (c: char) : int32
+    ensures { not valid_b58_char c -> result = -1 }
+    ensures { valid_b58_char c -> result = b582int c }
+  =
+    if 49 <= code c <= 57 then code c - 49 else
+    if 65 <= code c <= 72 then code c + 9 - 65 else
+    if 74 <= code c <= 78 then code c + 17 - 74 else
+    if 80 <= code c <= 90 then code c + 22 - 80 else
+    if 97 <= code c <= 107 then code c + 33 - 97 else
+    if 109 <= code c <= 122 then code c + 44 - 109
+    else -1
+
+(*
+  let base58_index2char (i: uint32) : char
+    requires { 0 <= i < 58 }
+    ensures { result = int2b58 i }
+  =
+    if i <= 8        then chr (to_int (i + 49))       else
+    if 9 <= i <= 16  then chr (to_int (i - 9 + 65))   else
+    if 17 <= i <= 21 then chr (to_int (i - 17 + 74))  else
+    if 22 <= i <= 32 then chr (to_int (i - 22 + 80))  else
+    if 33 <= i <= 43 then chr (to_int (i - 33 + 97))  else
+    if 44 <= i <= 57 then chr (to_int (i - 44 + 109) else
+    chr 0
+    *)
+
+(*
+  val constant one : char 
+    ensures { result = Char.get "1" 0 }
+
+  let base58_eat_ones (s: string) : int32
+  = let ref idx = 0 in
+    for j = 0 to String.length s - 1 do
+      invariant { 0 <= idx < String.length s }
+      if String.get s j = one then idx <- j
+    done;
+    idx
+    *)
+
+end

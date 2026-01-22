@@ -30,8 +30,12 @@
             aeneasPkgs.aeneas
             pkgs.git
             pkgs.jq
+            pkgs.rocq-core
+            pkgs.rocqPackages.bignums
             pkgs.rustup
             pkgs.taplo
+            pkgs.why3
+            pkgs.z3
             fstarPkgs.fstar
             haxPkgs.hax
           ];
