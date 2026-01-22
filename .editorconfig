@@ -1,2 +1,5 @@
 [*.mlw]
 indent_size = 2
+
+[*.c]
+indent_size = 2

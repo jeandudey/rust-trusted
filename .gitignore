@@ -1,6 +1,7 @@
 target/
 charon/
 .fstar-cache/
+**/*/builddir
 **/*/.depend
 **/*/hax.fst.config.json
 *.llbc

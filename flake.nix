@@ -28,8 +28,12 @@
         devShells.default = pkgs.mkShell {
           packages = [
             aeneasPkgs.aeneas
+            pkgs.framac
             pkgs.git
+            pkgs.go-task
             pkgs.jq
+            pkgs.meson
+            pkgs.ninja
             pkgs.rocq-core
             pkgs.rocqPackages.bignums
             pkgs.rustup
