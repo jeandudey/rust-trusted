@@ -28,6 +28,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             aeneasPkgs.aeneas
+            pkgs.alt-ergo
             pkgs.framac
             pkgs.git
             pkgs.go-task
@@ -43,6 +44,10 @@
             fstarPkgs.fstar
             haxPkgs.hax
           ];
+
+          shellHook = ''
+            why3 config detect
+          '';
         };
       }
     );
