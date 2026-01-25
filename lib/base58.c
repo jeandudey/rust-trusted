@@ -102,7 +102,7 @@
   @   ∀ ℤ i; is_base58_index(i) ⇒ base58_to_index(index_to_base58(i)) ≡ i;
   @*/
 
-/*@ assigns \result \from i;
+/*@ assigns \result \from indirect:i;
   @ behavior valid_index:
   @   requires is_base58_index(i);
   @   ensures \result ≡ index_to_base58(i);
@@ -170,6 +170,8 @@ base58_is_space (char c)
 }
 
 /*@ requires valid_read_string(s);
+  @ assigns \result \from indirect:s[0..strlen(s)];
+  @ ensures ∀ ℤ i; 0 ≤ i < \result ⇒ s[i] ≡ '1';
   @*/
 static inline size_t
 base58_eat_leading_ones (const char *s)
@@ -177,11 +179,12 @@ base58_eat_leading_ones (const char *s)
   size_t i = 0;
   /*@ loop invariant bounds: 0 ≤ i ≤ strlen{Pre}(s);
     @ loop invariant valid: valid_read_string(s + i);
-    @ loop invariant ones: ∀ ℤ j; 0 ≤ j < i ⇒ s[j] == '1';
+    @ loop invariant ones: ∀ ℤ j; 0 ≤ j < i ⇒ s[j] ≡ '1';
+    @ loop invariant continue: s[i] ≡ '1' ⇒ i < strlen{Pre}(s);
     @ loop assigns i;
     @ loop variant strlen{Pre}(s) - i;
     @*/
-  while (s[i] && s[i] == '1')
+  while (s[i] != '\0' && s[i] == '1')
     i++;
   return i;
 }

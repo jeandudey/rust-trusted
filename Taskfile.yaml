@@ -1,27 +1,27 @@
 ---
-version: '3'
+version: "3"
 tasks:
-  setup-library:
-    cmds:
-      - mkdir -p lib/builddir
-      - meson setup lib lib/builddir
+    setup-library:
+        cmds:
+            - mkdir -p lib/builddir
+            - meson setup lib lib/builddir
 
-  build-library:
-    deps: [setup-library]
-    cmds:
-      - meson compile -C lib/builddir
+    build-library:
+        deps: [setup-library]
+        cmds:
+            - meson compile -C lib/builddir
 
-  analysis:
-    deps: [build-library]
-    cmds:
-      - frama-c -json-compilation-database lib/builddir/compile_commands.json -save lib/builddir/frama.sav lib/base58.c
+    analysis:
+        deps: [build-library]
+        cmds:
+            - frama-c -json-compilation-database lib/builddir/compile_commands.json -save lib/builddir/frama.sav lib/base58.c
 
-  prove:
-    deps: [analysis]
-    cmds:
-      - frama-c -load lib/builddir/frama.sav -wp -wp-rte -wp-literals -wp-prover alt-ergo -save lib/builddir/frama.wp.sav
+    prove:
+        deps: [analysis]
+        cmds:
+            - frama-c -load lib/builddir/frama.sav -wp -wp-rte -wp-literals -wp-prover alt-ergo -wp-counter-examples -save lib/builddir/frama.wp.sav
 
-  gui:
-    deps: [prove]
-    cmds:
-      - frama-c-gui -load lib/builddir/frama.sav -wp -wp-rte -wp-prover alt-ergo
+    gui:
+        deps: [prove]
+        cmds:
+            - frama-c-gui -load lib/builddir/frama.sav -wp -wp-rte -wp-prover alt-ergo
