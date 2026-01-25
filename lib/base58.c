@@ -23,6 +23,15 @@
   @ ∨ 109 ≤ c ≤ 122;
   @*/
 
+/*@ predicate valid_read_byte_slice{L}(unsigned char *s, ℤ len) =
+  @   0 ≤ len ∧ \valid_read(s+(0..len));
+  @*/
+
+/*@ predicate valid_read_base58_string{L}(char *s) =
+  @   valid_read_string{L}(s)
+  @ ∧ (∀ ℤ i; 0 ≤ i < strlen(s) ⇒ is_base58_char(s[i]) ∨ is_space(s[i]));
+  @*/
+
 /*@ axiomatic IndexToBase58 {
   @   logic char index_to_base58(ℤ i);
   @
@@ -100,6 +109,14 @@
 
 /*@ lemma index_to_base58_inverse:
   @   ∀ ℤ i; is_base58_index(i) ⇒ base58_to_index(index_to_base58(i)) ≡ i;
+  @*/
+
+/*@ logic ℤ integer_from_big_endian(char *s, ℤ len) =
+  @   len ≡ 0 ? 0 : integer_from_big_endian(s, len - 1) * 256 + s[len - 1];
+  @*/
+
+/*@ logic ℤ integer_from_base58(char *s, ℤ len) =
+  @   len ≡ 0 ? 0 : integer_from_base58(s, len - 1) * 58 + base58_to_index(s[len - 1]);
   @*/
 
 /*@ assigns \result \from indirect:i;
@@ -222,3 +239,46 @@ base58_eat_leading_ones (const char *s)
 //
 //  return false;
 //}
+
+/*@ requires input: valid_read_byte_slice(input, input_len);
+  @ assigns \result \from indirect:input;
+  @ ensures bounds: 0 ≤ \result ≤ input_len;
+  @ ensures zeroes: ∀ ℤ i; 0 ≤ i < \result ⇒ input[i] ≡ 0;
+  @*/
+static inline int
+base58_count_zeroes (const unsigned char *input, int input_len)
+{
+  int i = 0;
+  /*@ loop invariant bounds: 0 ≤ i ≤ input_len;
+    @ loop invariant zeroes: ∀ ℤ j; 0 ≤ j < i ⇒ input[j] ≡ 0;
+    @ loop assigns i;
+    @ loop variant input_len - i;
+    @*/
+  while (i < input_len && input[i] == 0)
+      i++;
+  return i;
+}
+
+/*@ requires input: valid_read_byte_slice(input, input_len);
+  @ assigns \result \from indirect:input;
+  @*/
+bool
+base58_encode (const unsigned char *input, int input_len, const char *output, size_t output_len)
+{
+  int zeroes = base58_count_zeroes (input, input_len);
+  int i = zeroes;
+
+  input += zeroes;
+
+  /*@ loop invariant bounds: 0 ≤ i ≤ input_len;
+    @ loop assigns i;
+    @ loop variant input_len - i;
+    @*/
+  while (i < input_len) {
+    unsigned char carry = input[i];
+    int j = 0;
+    i++;
+  }
+
+  return false;
+}

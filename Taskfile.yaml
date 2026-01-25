@@ -19,7 +19,7 @@ tasks:
     prove:
         deps: [analysis]
         cmds:
-            - frama-c -load lib/builddir/frama.sav -wp -wp-rte -wp-literals -wp-prover alt-ergo -wp-counter-examples -save lib/builddir/frama.wp.sav
+            - frama-c -load lib/builddir/frama.sav -wp -wp-rte -wp-literals -wp-prover alt-ergo -save lib/builddir/frama.wp.sav
 
     gui:
         deps: [prove]
