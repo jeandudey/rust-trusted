@@ -1,7 +1,10 @@
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
+#include <trusted/ascii.h>
 
 /*@ logic 𝔹 is_space(char c) =
   @   c ≡ ' ' ∨ c ≡ '\f' ∨ c ≡ '\n' ∨ c ≡ '\r' ∨ c ≡ '\t' ∨ c ≡ '\v';
@@ -80,19 +83,19 @@
   @*/
 
 /*@ lemma not_base58_char_0:
-  @   ∀ char c; c == 48 ⇒ ¬is_base58_char(c); // '0'
+  @   ∀ char c; c ≡ 48 ⇒ ¬is_base58_char(c); // '0'
   @*/
 
 /*@ lemma not_base58_char_O:
-  @   ∀ char c; c == 79 ⇒ ¬is_base58_char(c); // 'O'
+  @   ∀ char c; c ≡ 79 ⇒ ¬is_base58_char(c); // 'O'
   @*/
 
 /*@ lemma not_base58_char_I:
-  @   ∀ char c; c == 73 ⇒ ¬is_base58_char(c); // 'I'
+  @   ∀ char c; c ≡ 73 ⇒ ¬is_base58_char(c); // 'I'
   @*/
 
 /*@ lemma not_base58_char_l:
-  @   ∀ char c; c == 108 ⇒ ¬is_base58_char(c); // 'l'
+  @   ∀ char c; c ≡ 108 ⇒ ¬is_base58_char(c); // 'l'
   @*/
 
 /*@ lemma base58_to_index_range:
@@ -208,7 +211,7 @@ base58_eat_leading_ones (const char *s)
 
 ///*@ requires valid_read_string(s);
 //  @ assigns \result \from s;
-//  @ ensures \result == skip_spaces(s);
+//  @ ensures \result ≡ skip_spaces(s);
 //  @*/
 //static inline const char *
 //base58_skip_spaces (const char *s)
