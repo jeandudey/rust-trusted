@@ -14,7 +14,7 @@ tasks:
     analysis:
         deps: [build-library]
         cmds:
-            - frama-c -json-compilation-database lib/builddir/compile_commands.json -save lib/builddir/frama.sav lib/base58.c
+            - frama-c -json-compilation-database lib/builddir/compile_commands.json -save lib/builddir/frama.sav lib/ascii.c lib/base58.c
 
     prove:
         deps: [analysis]
@@ -24,4 +24,4 @@ tasks:
     gui:
         deps: [prove]
         cmds:
-            - frama-c-gui -load lib/builddir/frama.sav -wp -wp-rte -wp-prover alt-ergo
+            - frama-c-gui -load lib/builddir/frama.wp.sav
