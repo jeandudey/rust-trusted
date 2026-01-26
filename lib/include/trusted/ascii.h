@@ -34,11 +34,18 @@
   @ assigns \result \from s, indirect:s[0 .. strlen(s)];
   @ behavior string_is_empty:
   @   requires length_is_zero: strlen(s) ≡ 0;
-  @   ensures result_is_equal: \result ≡ s;
+  @   ensures result_same_base: \base_addr(\result) ≡ \base_addr(s);
+  @   ensures result_is_empty: strlen(\result) ≡ 0;
   @ behavior string_is_positive:
   @   requires length_is_positive: 0 < strlen(s);
-  @   ensures equal_base_addr: \base_addr(\result) ≡ \base_addr(s);
-  @   ensures trimmed: strlen(\result) != strlen(s) ⇒ ∀ ℤ i; 0 ≤ i < strlen(s) - strlen(\result) ⇒ is_ascii_whitespace((unsigned char)s[i]) ≡ \true;
+  @   ensures result_same_base: valid_read_string(\result) && \base_addr(\result) ≡ \base_addr(s);
+  @   ensures result_length_bounds: strlen(\result) ≤ strlen(s);
+  @   ensures
+  @     result_is_trimmed:
+  @       strlen(\result) != strlen(s) ⇒
+  @       (∀ ℤ i;
+  @          0 ≤ i < strlen(s) - strlen(\result) ⇒
+  @          is_ascii_whitespace((unsigned char)s[i]) ≡ \true);
   @ disjoint behaviors;
   @ complete behaviors;
   @*/
